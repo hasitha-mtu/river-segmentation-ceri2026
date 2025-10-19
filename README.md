@@ -25,5 +25,5 @@ python scripts/04_train_unet.py
 See `docs/setup_guide.md` for details.
 
 ## Author
-[Your Name]  
-[Your Institution]
+Hasitha Adikari
+Nimbus|SIRIG|MTU
