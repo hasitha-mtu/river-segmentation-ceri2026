@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: Dataset Analysis",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/01_analyze_dataset.py",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python: Train Model",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/04_train_unet.py",
+            "console": "integratedTerminal"
+        }
+    ]
+}

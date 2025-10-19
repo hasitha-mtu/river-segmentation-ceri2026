@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Data (DON'T commit large files!)
+data/raw/images/*.jpg
+data/raw/images/*.png
+data/raw/masks/*.jpg
+data/raw/masks/*.png
+data/processed/
+data/splits/
+
+# Models (large files)
+results/models/**/*.h5
+results/models/**/*.hdf5
+results/models/**/*.keras
+results/models/**/checkpoints/
+
+# Results
+results/predictions/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Environment
+.env
+.env.local
+
+# Paper drafts (until final)
+paper/drafts/*
+!paper/drafts/.gitkeep
+
+# Keep empty directories
+!.gitkeep
