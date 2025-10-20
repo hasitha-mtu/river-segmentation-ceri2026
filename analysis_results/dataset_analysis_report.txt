@@ -3,65 +3,65 @@ DATASET QUALITY ASSESSMENT REPORT
 River Bride, Crookstown - Drone Image Dataset
 ================================================================================
 
-Generated: 2025-10-20T00:55:26.072453
-Total Images Analyzed: 374
+Generated: 2025-10-20T02:02:04.810294
+Total Images Analyzed: 415
 
 --------------------------------------------------------------------------------
 1. TEMPORAL DISTRIBUTION
 --------------------------------------------------------------------------------
-March 2025:  149 images (39.8%)
-June 2025:   63 images (16.8%)
-June 2025:   162 images (43.3%)
+March 2025:  166 images (40.0%)
+June 2025:   69 images (16.6%)
+June 2025:   180 images (43.4%)
 Other:       0 images
 
 --------------------------------------------------------------------------------
 2. CANOPY DENSITY ANALYSIS
 --------------------------------------------------------------------------------
-Mean Canopy Coverage: 52.3% (±29.4%)
+Mean Canopy Coverage: 52.4% (±29.4%)
 Range: 6.7% - 95.6%
 
 Distribution by Category:
-  Sparse (<30%):      120 images (32.1%)
-  Moderate (30-60%):  89 images (23.8%)
-  Dense (60-80%):     46 images (12.3%)
-  Very Dense (>80%):  119 images (31.8%)
+  Sparse (<30%):      132 images (31.8%)
+  Moderate (30-60%):  101 images (24.3%)
+  Dense (60-80%):     48 images (11.6%)
+  Very Dense (>80%):  134 images (32.3%)
 
 Seasonal Comparison:
   March Mean: 23.6%
-  June Mean:  54.9%
-  July Mean:  77.7%
-  Difference: 31.3% (June higher)
+  June Mean:  55.2%
+  July Mean:  77.9%
+  Difference: 31.6% (June higher)
 
-  Difference: 54.1% (July higher)
+  Difference: 54.2% (July higher)
 
 --------------------------------------------------------------------------------
 3. IMAGE QUALITY METRICS
 --------------------------------------------------------------------------------
 Sharpness:
-  Mean: 13483.0
-  Sharp images: 374 (100.0%)
+  Mean: 13514.9
+  Sharp images: 415 (100.0%)
   Blurry images: 0 (0.0%)
 
 Exposure:
-  Mean brightness: 107.9
-  Underexposed: 58 images
+  Mean brightness: 107.8
+  Underexposed: 63 images
   Overexposed:  0 images
-  Well exposed: 316 images
+  Well exposed: 352 images
 
 Shadow Coverage:
-  Mean: 29.3%
+  Mean: 29.4%
   Note: High shadow coverage expected under canopy
 
 --------------------------------------------------------------------------------
 4. ANNOTATION QUALITY
 --------------------------------------------------------------------------------
-Mean Continuity Ratio: 0.684
+Mean Continuity Ratio: 0.685
   (1.0 = perfect single component, lower = fragmented)
 
-Mean Alignment Score: 0.351
+Mean Alignment Score: 0.350
   (measures mask-image edge agreement)
 
-Images with artifacts (>5 small regions): 31
+Images with artifacts (>5 small regions): 35
 
 --------------------------------------------------------------------------------
 5. RECOMMENDATIONS
