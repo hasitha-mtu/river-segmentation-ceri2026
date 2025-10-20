@@ -1,0 +1,84 @@
+================================================================================
+DATASET QUALITY ASSESSMENT REPORT
+River Bride, Crookstown - Drone Image Dataset
+================================================================================
+
+Generated: 2025-10-20T00:55:26.072453
+Total Images Analyzed: 374
+
+--------------------------------------------------------------------------------
+1. TEMPORAL DISTRIBUTION
+--------------------------------------------------------------------------------
+March 2025:  149 images (39.8%)
+June 2025:   63 images (16.8%)
+June 2025:   162 images (43.3%)
+Other:       0 images
+
+--------------------------------------------------------------------------------
+2. CANOPY DENSITY ANALYSIS
+--------------------------------------------------------------------------------
+Mean Canopy Coverage: 52.3% (±29.4%)
+Range: 6.7% - 95.6%
+
+Distribution by Category:
+  Sparse (<30%):      120 images (32.1%)
+  Moderate (30-60%):  89 images (23.8%)
+  Dense (60-80%):     46 images (12.3%)
+  Very Dense (>80%):  119 images (31.8%)
+
+Seasonal Comparison:
+  March Mean: 23.6%
+  June Mean:  54.9%
+  July Mean:  77.7%
+  Difference: 31.3% (June higher)
+
+  Difference: 54.1% (July higher)
+
+--------------------------------------------------------------------------------
+3. IMAGE QUALITY METRICS
+--------------------------------------------------------------------------------
+Sharpness:
+  Mean: 13483.0
+  Sharp images: 374 (100.0%)
+  Blurry images: 0 (0.0%)
+
+Exposure:
+  Mean brightness: 107.9
+  Underexposed: 58 images
+  Overexposed:  0 images
+  Well exposed: 316 images
+
+Shadow Coverage:
+  Mean: 29.3%
+  Note: High shadow coverage expected under canopy
+
+--------------------------------------------------------------------------------
+4. ANNOTATION QUALITY
+--------------------------------------------------------------------------------
+Mean Continuity Ratio: 0.684
+  (1.0 = perfect single component, lower = fragmented)
+
+Mean Alignment Score: 0.351
+  (measures mask-image edge agreement)
+
+Images with artifacts (>5 small regions): 31
+
+--------------------------------------------------------------------------------
+5. RECOMMENDATIONS
+--------------------------------------------------------------------------------
+Issues Found:
+  b'\xe2\x9a\xa0 Low mean continuity (0.68) - river masks may be fragmented'
+
+Dataset Strengths:
+Good canopy diversity (7% - 96%)
+Temporal variation (March vs June vs July)
+
+Recommended Next Steps:
+  1. Review and clean images with low quality scores
+  2. Verify annotations for images with low continuity
+  3. Use stratified split (see train_val_test_split.json)
+  4. Consider data augmentation for underrepresented categories
+
+================================================================================
+END OF REPORT
+================================================================================
