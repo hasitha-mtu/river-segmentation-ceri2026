@@ -28,16 +28,16 @@ warnings.filterwarnings('ignore')
 class Config:
     """Configuration for dataset analysis"""
     # Paths - UPDATE THESE TO YOUR PATHS
-    IMAGE_DIR = "data/images"          # Your 415 RGB images
-    MASK_DIR = "data/masks"            # Your 415 masks
-    OUTPUT_DIR = "analysis_results"     # Where to save results
+    IMAGE_DIR = "data/images"         
+    MASK_DIR = "data/masks"            
+    OUTPUT_DIR = "analysis_results"     
     
     # Image specifications
-    ORIGINAL_SIZE = (5280, 3956)       # Your original resolution
-    WORKING_SIZE = (512, 512)          # Your working resolution
+    ORIGINAL_SIZE = (5280, 3956)      
+    WORKING_SIZE = (512, 512)          
     
     # Analysis parameters
-    CANOPY_THRESHOLD_NDVI = 0.2        # NDVI > 0.2 = vegetation
+    CANOPY_THRESHOLD_NDVI = 0.2        # NDVI > 0.2 = vegetation,  generally, values above (0.2) indicate vegetation, with higher values signifying denser, healthier vegetation
     BLUR_THRESHOLD = 100               # Laplacian variance threshold
     MIN_RIVER_AREA = 1000              # Minimum river pixels
     
@@ -76,7 +76,8 @@ class CanopyDensityAnalyzer:
         # Method 1: Pseudo-NDVI
         ndvi = self.calculate_pseudo_ndvi(image)
         
-        # Method 2: ExG (Excess Green Index)
+        # Method 2: ExG (Excess Green Index), a vegetation index that uses RGB (red, green, blue) color data from images to identify and quantify greenery which highlights green areas by giving more weight to the green channel than to the red and blue channels. 
+        # This helps distinguish vegetation from other backgrounds like soil and shadows, making it useful for agricultural monitoring, canopy structure analysis, and mapping. 
         r = image[:, :, 0].astype(float) / 255.0
         g = image[:, :, 1].astype(float) / 255.0
         b = image[:, :, 2].astype(float) / 255.0
@@ -214,8 +215,6 @@ class SpatialDistributionAnalyzer:
         june_count = 0
         july_count = 0
         other_count = 0
-
-        print(f'analyze_temporal_distribution|config: {self.config}')
         
         for path in image_paths:
             filename = os.path.basename(path)
@@ -1036,12 +1035,10 @@ def main():
     
     # Update these paths to match your setup!
     config = Config()
-    config.IMAGE_DIR = "data/raw/images"      # YOUR 415 IMAGES HERE
-    config.MASK_DIR = "data/raw/masks"        # YOUR 415 MASKS HERE
+    config.IMAGE_DIR = "data/raw/images"      
+    config.MASK_DIR = "data/raw/masks"        
     config.OUTPUT_DIR = "analysis_results"
     
-    # Identifiers for March and June in your filenames
-    # Examples: "IMG_202503", "DJI_March", "2025-03-15", etc.
     config.MARCH_IDENTIFIER = "March"
     config.JUNE_IDENTIFIER = "June"
     config.JULY_IDENTIFIER = "July"
