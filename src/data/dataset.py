@@ -136,8 +136,8 @@ class RiverSegmentationDataset:
         This function is called by tf.py_function.
         """
         # Decode bytes to string
-        image_path_str = image_path.decode('utf-8')
-        mask_path_str = mask_path.decode('utf-8')
+        image_path_str = image_path.numpy().decode('utf-8')
+        mask_path_str = mask_path.numpy().decode('utf-8')
         
         # Load image and mask
         image, mask = self._load_image_mask(image_path_str, mask_path_str)
@@ -292,7 +292,7 @@ def create_augmentation_pipeline(config: Dict = None) -> A.Compose:
 # Example usage and testing
 if __name__ == "__main__":
     import sys
-    sys.path.append('src')
+    sys.path.append('src/data')
     from feature_extraction import FeatureExtractor
     
     print("="*70)
