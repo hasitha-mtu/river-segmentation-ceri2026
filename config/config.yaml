@@ -1,0 +1,189 @@
+# River Segmentation Configuration
+# Based on your research plan
+
+# Dataset Configuration
+dataset:
+  raw_data_path: "data/raw"
+  processed_data_path: "data/processed"
+  augmented_data_path: "data/augmented"
+  
+  # Image specifications
+  original_resolution: [5280, 3956]  # Original drone images
+  working_resolution: [512, 512]      # Training resolution
+  
+  # Dataset splits (from your plan)
+  train_ratio: 0.60  # ~300-400 images
+  val_ratio: 0.20    # ~100-150 images
+  test_ratio: 0.20   # ~100-150 images
+  
+  # Ensure site diversity in splits
+  stratify_by: ["canopy_density", "site_location"]
+  
+  # Total images (from quality report)
+  total_images: 415
+  
+# Canopy Density Categories (from quality report)
+canopy:
+  sparse_threshold: 0.30      # <30%
+  moderate_threshold: 0.60    # 30-60%
+  dense_threshold: 0.80       # 60-80%
+  # >80% = very dense
+
+# Feature Extraction (Experiment 1)
+features:
+  # 18 total features: 8 luminance + 10 chrominance
+  color_spaces:
+    - RGB      # 3 channels
+    - HSV      # 3 channels (H, S, V)
+    - LAB      # 3 channels (L, a, b)
+    - YCbCr    # 3 channels (Y, Cb, Cr)
+  
+  luminance_channels: ["L", "V", "Y"]  # 8 channels total after extraction
+  chrominance_channels: ["R", "G", "B", "H", "S", "a", "b", "Cb", "Cr", "Intensity"]  # 10 channels
+  
+  total_channels: 18
+
+# Data Augmentation (from your plan Section 3.4)
+augmentation:
+  train:
+    rotation: 30              # ±30° for river angles
+    horizontal_flip: true
+    vertical_flip: true
+    brightness: 0.30          # ±30% to simulate lighting
+    shadow_prob: 0.40         # 40% probability shadow simulation
+    
+  # Effective training set
+  augmentation_factor: 8      # 415 × 8 = 3,320 images
+  
+  # Multi-scale crops (from plan)
+  multiscale_crops:
+    - [2048, 2048]  # Center crop
+    - [1024, 1024]  # Multiple crops per image
+  scale_factor: "3-4x"  # Creates 3-4× more samples
+
+# Training Configuration (from your plan Section 3.7)
+training:
+  # Optimizer
+  optimizer: "Adam"
+  initial_lr: 0.0001         # 1e-4
+  lr_schedule: "ReduceLROnPlateau"
+  lr_factor: 0.5
+  lr_patience: 7
+  
+  # Training params
+  batch_size: 4              # Limited by GPU memory
+  epochs: 100
+  early_stopping_patience: 20
+  
+  # Loss function (Combined BCE + Dice + Focal)
+  loss:
+    bce_weight: 1.0
+    dice_weight: 1.0
+    focal_weight: 1.0
+    focal_alpha: 0.25
+    focal_gamma: 2.0
+  
+  # Hardware (from plan)
+  device: "cuda"  # NVIDIA RTX 3090 / A100 (24GB VRAM)
+  num_workers: 4
+  pin_memory: true
+
+# Validation Strategy (from plan)
+validation:
+  k_fold: 5                   # 5-fold cross-validation
+  per_site: true              # Leave-one-site-out
+  temporal: true              # Train spring/summer, test autumn/winter
+
+# Experiment 1: Feature Importance (Section 3.4)
+experiment_feature_importance:
+  baseline_model: "RandomForest"
+  n_estimators: 100
+  max_depth: null
+  
+  methods:
+    - "mean_decrease_impurity"
+    - "permutation_importance"
+    - "shap"
+  
+  stratify_by_canopy: true    # Sparse/moderate/dense
+  
+# Experiment 2: Ablation Study (Section 3.4)
+experiment_ablation:
+  configurations:
+    luminance_only:
+      channels: 8
+      description: "8 luminance channels only"
+      
+    chrominance_only:
+      channels: 10
+      description: "10 chrominance channels only"
+      
+    rgb_baseline:
+      channels: 3
+      description: "Standard RGB (baseline)"
+      
+    full_features:
+      channels: 18
+      description: "All 18 features"
+      
+    top5_features:
+      channels: 5
+      description: "Data-driven top-5 selection"
+
+# Model Architectures
+models:
+  unet:
+    encoder: "resnet34"
+    encoder_weights: "imagenet"
+    in_channels: 3  # Will be modified per experiment
+    classes: 1      # Binary segmentation (water/non-water)
+    
+  deeplabv3plus:
+    encoder: "resnet50"
+    encoder_weights: "imagenet"
+    in_channels: 3
+    classes: 1
+
+# Evaluation Metrics (from plan)
+metrics:
+  segmentation:
+    - "iou"           # Intersection over Union
+    - "f1_score"      # F1-Score
+    - "precision"
+    - "recall"
+  
+  hydraulic:
+    - "mae"           # Mean Absolute Error (width)
+    - "rmse"          # Root Mean Square Error (area)
+    - "percentage_error"
+    - "r_squared"     # Correlation coefficient
+
+# Hydraulic Validation (Phase 4, Section 3.8-3.10)
+hydraulic_validation:
+  width_categories:
+    - [0, 5]        # <5m
+    - [5, 10]       # 5-10m
+    - [10, 20]      # 10-20m
+    - [20, 100]     # >20m
+  
+  alert_thresholds:
+    - 0.30  # 30% increase
+    - 0.60  # 60% increase
+    - 1.00  # 100% increase
+
+# Paths
+paths:
+  checkpoints: "models/checkpoints"
+  logs: "models/logs"
+  results: "experiments/results"
+  figures: "experiments/results/figures"
+
+# Logging
+logging:
+  use_tensorboard: true
+  use_wandb: false
+  log_interval: 10  # Log every 10 batches
+  save_best_only: true
+  
+# Random seed for reproducibility
+seed: 42
