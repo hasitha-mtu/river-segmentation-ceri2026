@@ -1,7 +1,7 @@
 """
 Feature Extraction for River Segmentation - TensorFlow Version
 ===============================================================
-Extracts 18 features (8 luminance + 10 chrominance) from RGB images
+Extracts 12 features (3 luminance + 10 chrominance) from RGB images
 Based on research plan Section 3.4: Luminance vs Chrominance Contribution Analysis
 """
 
@@ -16,7 +16,7 @@ class FeatureExtractor:
     Extracts multi-channel features from RGB images for river segmentation.
     
     Features:
-        - 8 Luminance channels: L (LAB), V (HSV), Y (YCbCr), + derived features
+        - 2 Luminance channels: L (LAB), 1 derived features
         - 10 Chrominance channels: R, G, B, H, S, a, b, Cb, Cr, Intensity
     """
     
@@ -29,22 +29,23 @@ class FeatureExtractor:
         self.feature_names = self._get_feature_names()
         
     def _get_feature_names(self) -> List[str]:
-        """Returns ordered list of all 18 feature names"""
-        luminance = ['L_LAB', 'V_HSV', 'Y_YCbCr', 'L_max', 'L_min', 
-                     'L_mean', 'L_range', 'L_normalized']
+        """Returns ordered list of all 12 feature names"""
+        # luminance = ['L_LAB', 'V_HSV', 'Y_YCbCr', 'L_max', 'L_min', 
+        #              'L_mean', 'L_range', 'L_normalized']
+        luminance = ['L_LAB', 'L_range', 'L_texture']
         chrominance = ['R', 'G', 'B', 'H_HSV', 'S_HSV', 
                        'a_LAB', 'b_LAB', 'Cb_YCbCr', 'Cr_YCbCr', 'Intensity']
         return luminance + chrominance
     
     def extract_all_features(self, image: np.ndarray) -> np.ndarray:
         """
-        Extract all 18 features from RGB image.
+        Extract all 12 features from RGB image.
         
         Args:
             image: RGB image (H, W, 3) in range [0, 255] or [0, 1]
             
         Returns:
-            features: (H, W, 18) array of all features
+            features: (H, W, 12) array of all features
         """
         # Normalize to [0, 255] if needed
         if image.max() <= 1.0:
@@ -63,11 +64,12 @@ class FeatureExtractor:
     
     def _extract_luminance(self, image: np.ndarray) -> np.ndarray:
         """
-        Extract 8 luminance channels.
+        Extract 2 luminance channels.
         
         Returns:
-            luminance: (H, W, 8) array
+            luminance: (H, W, 2) array
         """
+
         # Convert to different color spaces
         lab = cv2.cvtColor(image, cv2.COLOR_RGB2LAB)
         hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
@@ -81,18 +83,71 @@ class FeatureExtractor:
         # Derived luminance features
         L_max = np.maximum.reduce([L, V, Y])
         L_min = np.minimum.reduce([L, V, Y])
-        L_mean = (L + V + Y) / 3.0
         L_range = L_max - L_min
-        
-        # Normalized luminance (0-1)
-        L_normalized = L_mean / 255.0
-        
-        # Stack all luminance features
+
+
+        gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+        sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=5)  # Horizontal edges
+        sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=5)  # Vertical edges
+        L_texture = cv2.magnitude(sobelx, sobely)  # Compute gradient magnitude
+
         luminance = np.stack([
-            L, V, Y, L_max, L_min, L_mean, L_range, L_normalized
+            L,  L_range, L_texture
         ], axis=2)
         
         return luminance.astype(np.float32)
+    
+    # def _extract_luminance(self, image: np.ndarray) -> np.ndarray:
+    #     """
+    #     Extract 3 independent luminance channels.
+        
+    #     Args:
+    #         image: (H, W, 3) RGB or BGR numpy array (uint8 or float32)
+        
+    #     Returns:
+    #         luminance: (H, W, 3) normalized float32 array [0, 1]
+    #     """
+        
+    #     # Ensure image is uint8 for color space conversions
+    #     if image.dtype == np.float32 or image.dtype == np.float64:
+    #         img_uint8 = (image * 255).astype(np.uint8)
+    #     else:
+    #         img_uint8 = image.astype(np.uint8)
+        
+    #     # Determine if input is RGB or BGR based on your pipeline
+    #     # Most OpenCV functions expect BGR, but if you're using RGB:
+    #     # Option 1: If your image is RGB (from PIL, matplotlib, etc.)
+    #     img_bgr = cv2.cvtColor(img_uint8, cv2.COLOR_RGB2BGR)
+        
+    #     # Option 2: If your image is already BGR (from cv2.imread)
+    #     # img_bgr = img_uint8
+        
+    #     # Convert to LAB color space
+    #     lab = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2LAB)
+    #     L = lab[:, :, 0].astype(np.float32) / 255.0  # Normalize to [0, 1]
+        
+    #     # Calculate color range (saturation proxy)
+    #     # Use the BGR image for this
+    #     img_float = img_bgr.astype(np.float32) / 255.0
+    #     L_range = np.max(img_float, axis=2) - np.min(img_float, axis=2)
+        
+    #     # Calculate texture (Laplacian)
+    #     gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY).astype(np.float32) / 255.0
+    #     laplacian = cv2.Laplacian(gray, cv2.CV_64F)
+    #     L_texture = np.abs(laplacian)
+        
+    #     # Normalize texture to [0, 1] range
+    #     if L_texture.max() > 0:
+    #         L_texture = L_texture / L_texture.max()
+        
+    #     # Stack the 3 independent luminance features
+    #     luminance = np.stack([
+    #         L,          # Representative luminance [0, 1]
+    #         L_range,    # Color saturation proxy [0, 1]
+    #         L_texture   # Edge/texture information [0, 1]
+    #     ], axis=2)
+        
+    #     return luminance.astype(np.float32)
     
     def _extract_chrominance(self, image: np.ndarray) -> np.ndarray:
         """
@@ -130,7 +185,7 @@ class FeatureExtractor:
         return chrominance.astype(np.float32)
     
     def extract_luminance_only(self, image: np.ndarray) -> np.ndarray:
-        """Extract only luminance features (8 channels)"""
+        """Extract only luminance features (3 channels)"""
         if image.max() <= 1.0:
             image = (image * 255).astype(np.uint8)
         else:
@@ -280,12 +335,12 @@ def create_tf_dataset(
     
     # Determine number of channels
     channel_map = {
-        "all": 18,
-        "luminance": 8,
+        "all": 13,
+        "luminance": 2,
         "chrominance": 10,
         "rgb": 3
     }
-    n_channels = channel_map.get(feature_config, 18)
+    n_channels = channel_map.get(feature_config, 13)
     
     # Create dataset from file paths
     dataset = tf.data.Dataset.from_tensor_slices((image_paths, mask_paths))
@@ -363,20 +418,24 @@ def visualize_features(features: np.ndarray, feature_names: List[str],
 if __name__ == "__main__":
     # Create sample image
     sample_image = np.random.randint(0, 255, (512, 512, 3), dtype=np.uint8)
+    image_path =  'data/raw/images/DJI_20250728094628_0280_V_July.png'
+
+    sample_image = cv2.imread(image_path)
+    sample_image = cv2.cvtColor(sample_image, cv2.COLOR_BGR2RGB)
     
     # Initialize extractor
     extractor = FeatureExtractor()
     
     # Extract all features
     all_features = extractor.extract_all_features(sample_image)
-    print(f"All features shape: {all_features.shape}")  # (512, 512, 18)
+    print(f"All features shape: {all_features.shape}")  # (512, 512, 13)
 
     # Visualize features
     visualize_features(all_features, extractor.feature_names, 'results/feature_importance/extracted_features')
     
     # Extract luminance only
     luminance = extractor.extract_luminance_only(sample_image)
-    print(f"Luminance features shape: {luminance.shape}")  # (512, 512, 8)
+    print(f"Luminance features shape: {luminance.shape}")  # (512, 512, 3)
     
     # Extract chrominance only
     chrominance = extractor.extract_chrominance_only(sample_image)
@@ -388,7 +447,7 @@ if __name__ == "__main__":
     
     # Convert to TensorFlow tensor
     tensor = extractor.to_tensor(all_features)
-    print(f"TensorFlow tensor shape: {tensor.shape}")  # (512, 512, 18)
+    print(f"TensorFlow tensor shape: {tensor.shape}")  # (512, 512, 13)
     print(f"TensorFlow tensor dtype: {tensor.dtype}")
     
     # Normalize features
@@ -397,7 +456,7 @@ if __name__ == "__main__":
     
     print("\nFeature names:")
     for i, name in enumerate(extractor.feature_names):
-        feature_type = "Luminance" if i < 8 else "Chrominance"
+        feature_type = "Luminance" if i < 2 else "Chrominance"
         print(f"  {i:2d}. {name:20s} ({feature_type})")
     
     # Test TensorFlow dataset creation
