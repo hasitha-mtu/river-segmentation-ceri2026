@@ -17,12 +17,15 @@ from pathlib import Path
 import json
 import os
 
+sys.path.append('src/utils')
+from loss_util import dice_coefficient, iou_metric, dice_loss, combined_loss
+
 sys.path.append('src/data')
 from feature_extraction import FeatureExtractor
 from dataset import RiverSegmentationDataset, create_augmentation_pipeline
 
 sys.path.append('src/models')
-from unet import create_unet_model, dice_coefficient, dice_loss, iou_metric, combined_loss
+from unet import create_unet_model
 from deeplabv3plus import create_deeplabv3plus
 
 def load_config(config_path='config/config.yaml'):
@@ -527,6 +530,59 @@ def main():
     print(f"\nView training progress with TensorBoard:")
     print(f"  tensorboard --logdir {args.output_dir}/{args.model}/{args.feature_config}/logs")
 
+
+def execute_model(model_type, feature_config, epochs, batch_size, output_dir, mixed_precision, 
+                  config='config/config.yaml',
+                  data_dir='data/processed',
+                  lr=None,
+                  resume_from=None,
+                  gpu=None):
+    print(f'Input params model_type:{model_type},feature_config:{feature_config}, epochs:{epochs}, \
+          batch_size:{batch_size},output_dir:{output_dir},mixed_precision:{mixed_precision}, \
+            config:{config},data_dir:{data_dir},lr:{lr},resume_from:{resume_from},gpu:{gpu}')
+    
+    # Set GPU
+    if gpu is not None:
+        gpus = tf.config.list_physical_devices('GPU')
+        if gpus:
+            try:
+                tf.config.set_visible_devices(gpus[gpu], 'GPU')
+                tf.config.experimental.set_memory_growth(gpus[gpu], True) 
+                print(f"Using GPU {gpu}: {gpus[gpu].name}")
+            except RuntimeError as e:
+                print(f"Error setting GPU: {e}")
+    
+    # Enable mixed precision if requested
+    if mixed_precision:
+        print("Enabling mixed precision training")
+        tf.keras.mixed_precision.set_global_policy('mixed_float16') 
+    
+    # Check GPU availability
+    print("\nGPU Check:")
+    gpus = tf.config.list_physical_devices('GPU')
+    if gpus:
+        print(f"✓ {len(gpus)} GPU(s) available")
+        for gpu in gpus:
+            print(f"  - {gpu.name}")
+    else:
+        print("⚠ No GPU found, using CPU")
+    
+    # Train model
+    _model, _history, _metrics = train_model(
+        model_type=model_type,
+        feature_config=feature_config,
+        config_path=config,
+        data_dir=data_dir,
+        output_dir=output_dir,
+        batch_size=batch_size,
+        epochs=epochs,
+        learning_rate=lr,
+        resume_from=resume_from
+    )
+    
+    print("\n✓ Training completed successfully!")
+    print(f"\nView training progress with TensorBoard:")
+    print(f"  tensorboard --logdir {output_dir}/{model_type}/{feature_config}/logs")
 
 if __name__ == "__main__":
     print(os.getcwd())

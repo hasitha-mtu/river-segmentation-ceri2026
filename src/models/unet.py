@@ -17,7 +17,8 @@ import sys
 from pathlib import Path
 from typing import Tuple
 
-sys.path.append('src')
+sys.path.append('src/utils')
+from loss_util import dice_coefficient, iou_metric, dice_loss, combined_loss
 
 
 def create_unet_model(
@@ -110,80 +111,80 @@ def create_unet_model(
     return model
 
 
-def dice_coefficient(y_true, y_pred, smooth=1e-6):
-    """
-    Dice coefficient metric for segmentation.
+# def dice_coefficient(y_true, y_pred, smooth=1e-6):
+#     """
+#     Dice coefficient metric for segmentation.
     
-    Args:
-        y_true: Ground truth masks
-        y_pred: Predicted masks
-        smooth: Smoothing factor to avoid division by zero
+#     Args:
+#         y_true: Ground truth masks
+#         y_pred: Predicted masks
+#         smooth: Smoothing factor to avoid division by zero
         
-    Returns:
-        Dice coefficient
-    """
-    y_true_f = tf.reshape(y_true, [-1])
-    y_pred_f = tf.reshape(y_pred, [-1])
+#     Returns:
+#         Dice coefficient
+#     """
+#     y_true_f = tf.reshape(y_true, [-1])
+#     y_pred_f = tf.reshape(y_pred, [-1])
     
-    intersection = tf.reduce_sum(y_true_f * y_pred_f)
-    dice = (2. * intersection + smooth) / (tf.reduce_sum(y_true_f) + tf.reduce_sum(y_pred_f) + smooth)
+#     intersection = tf.reduce_sum(y_true_f * y_pred_f)
+#     dice = (2. * intersection + smooth) / (tf.reduce_sum(y_true_f) + tf.reduce_sum(y_pred_f) + smooth)
     
-    return dice
+#     return dice
 
 
-def dice_loss(y_true, y_pred):
-    """Dice loss for training"""
-    return 1 - dice_coefficient(y_true, y_pred)
+# def dice_loss(y_true, y_pred):
+#     """Dice loss for training"""
+#     return 1 - dice_coefficient(y_true, y_pred)
 
 
-def combined_loss(y_true, y_pred):
-    """
-    Combined loss: BCE + Dice + Focal
-    From research plan Section 3.7
-    """
-    # Binary crossentropy (per pixel)
-    bce = tf.keras.losses.binary_crossentropy(y_true, y_pred)
-    bce = tf.reduce_mean(bce)  # Average over all pixels
+# def combined_loss(y_true, y_pred):
+#     """
+#     Combined loss: BCE + Dice + Focal
+#     From research plan Section 3.7
+#     """
+#     # Binary crossentropy (per pixel)
+#     bce = tf.keras.losses.binary_crossentropy(y_true, y_pred)
+#     bce = tf.reduce_mean(bce)  # Average over all pixels
     
-    # Dice loss (already a scalar)
-    dice = dice_loss(y_true, y_pred)
+#     # Dice loss (already a scalar)
+#     dice = dice_loss(y_true, y_pred)
     
-    # Focal loss
-    alpha = 0.25
-    gamma = 2.0
+#     # Focal loss
+#     alpha = 0.25
+#     gamma = 2.0
     
-    # Calculate focal loss per pixel
-    bce_per_pixel = tf.keras.losses.binary_crossentropy(y_true, y_pred)
-    bce_exp = tf.exp(-bce_per_pixel)
-    focal = alpha * tf.pow(1 - bce_exp, gamma) * bce_per_pixel
-    focal = tf.reduce_mean(focal)  # Average over all pixels
+#     # Calculate focal loss per pixel
+#     bce_per_pixel = tf.keras.losses.binary_crossentropy(y_true, y_pred)
+#     bce_exp = tf.exp(-bce_per_pixel)
+#     focal = alpha * tf.pow(1 - bce_exp, gamma) * bce_per_pixel
+#     focal = tf.reduce_mean(focal)  # Average over all pixels
     
-    # Combine (equal weights as per config)
-    total_loss = bce + dice + focal
+#     # Combine (equal weights as per config)
+#     total_loss = bce + dice + focal
     
-    return total_loss
+#     return total_loss
 
 
-def iou_metric(y_true, y_pred, threshold=0.5):
-    """
-    Intersection over Union (IoU) metric.
+# def iou_metric(y_true, y_pred, threshold=0.5):
+#     """
+#     Intersection over Union (IoU) metric.
     
-    Args:
-        y_true: Ground truth masks
-        y_pred: Predicted masks
-        threshold: Threshold for binary prediction
+#     Args:
+#         y_true: Ground truth masks
+#         y_pred: Predicted masks
+#         threshold: Threshold for binary prediction
         
-    Returns:
-        IoU score
-    """
-    y_pred_binary = tf.cast(y_pred > threshold, tf.float32)
+#     Returns:
+#         IoU score
+#     """
+#     y_pred_binary = tf.cast(y_pred > threshold, tf.float32)
     
-    intersection = tf.reduce_sum(y_true * y_pred_binary)
-    union = tf.reduce_sum(y_true) + tf.reduce_sum(y_pred_binary) - intersection
+#     intersection = tf.reduce_sum(y_true * y_pred_binary)
+#     union = tf.reduce_sum(y_true) + tf.reduce_sum(y_pred_binary) - intersection
     
-    iou = (intersection + 1e-6) / (union + 1e-6)
+#     iou = (intersection + 1e-6) / (union + 1e-6)
     
-    return iou
+#     return iou
 
 
 # Example usage and testing
