@@ -160,8 +160,8 @@ class RiverSegmentationDataset:
     def get_n_channels(self) -> int:
         """Get number of channels based on feature configuration"""
         channel_map = {
-            "all": 18,
-            "luminance": 8,
+            "all": 13,
+            "luminance": 3,
             "chrominance": 10,
             "rgb": 3
         }
@@ -324,7 +324,7 @@ if __name__ == "__main__":
         
         # Get one batch
         for features, masks in tf_dataset.take(1):
-            print(f"✓ Features shape: {features.shape}")  # (2, 512, 512, 18)
+            print(f"✓ Features shape: {features.shape}")  # (2, 512, 512, 13)
             print(f"✓ Masks shape: {masks.shape}")  # (2, 512, 512, 1)
             print(f"✓ Features range: [{tf.reduce_min(features):.3f}, {tf.reduce_max(features):.3f}]")
             print(f"✓ Masks range: [{tf.reduce_min(masks):.3f}, {tf.reduce_max(masks):.3f}]")
@@ -340,10 +340,10 @@ if __name__ == "__main__":
     print("-" * 70)
     
     configs = [
-        ("luminance", 8),
+        ("luminance", 3),
         ("chrominance", 10),
         ("rgb", 3),
-        ("all", 18)
+        ("all", 13)
     ]
     
     for config_name, expected_channels in configs:
