@@ -33,8 +33,7 @@ class FeatureExtractor:
         # luminance = ['L_LAB', 'V_HSV', 'Y_YCbCr', 'L_max', 'L_min', 
         #              'L_mean', 'L_range', 'L_normalized']
         luminance = ['L_LAB', 'L_range', 'L_texture']
-        chrominance = ['R', 'G', 'B', 'H_HSV', 'S_HSV', 
-                       'a_LAB', 'b_LAB', 'Cb_YCbCr', 'Cr_YCbCr', 'Intensity']
+        chrominance = ['H_HSV', 'S_HSV', 'a_LAB', 'b_LAB', 'Cb_YCbCr', 'Cr_YCbCr', 'Intensity']
         return luminance + chrominance
     
     def extract_all_features(self, image: np.ndarray) -> np.ndarray:
@@ -179,7 +178,7 @@ class FeatureExtractor:
         
         # Stack all chrominance features
         chrominance = np.stack([
-            R, G, B, H, S, a, b, Cb, Cr, Intensity
+            H, S, a, b, Cb, Cr, Intensity
         ], axis=2)
         
         return chrominance.astype(np.float32)
@@ -387,7 +386,7 @@ def visualize_features(features: np.ndarray, feature_names: List[str],
     import matplotlib.pyplot as plt
     
     n_features = features.shape[2]
-    n_cols = 6
+    n_cols = 5
     n_rows = (n_features + n_cols - 1) // n_cols
     
     fig, axes = plt.subplots(n_rows, n_cols, figsize=(20, n_rows * 3))
@@ -456,7 +455,7 @@ if __name__ == "__main__":
     
     print("\nFeature names:")
     for i, name in enumerate(extractor.feature_names):
-        feature_type = "Luminance" if i < 2 else "Chrominance"
+        feature_type = "Luminance" if i < 3 else "Chrominance"
         print(f"  {i:2d}. {name:20s} ({feature_type})")
     
     # Test TensorFlow dataset creation
