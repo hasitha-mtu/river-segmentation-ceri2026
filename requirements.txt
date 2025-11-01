@@ -51,8 +51,7 @@ imgaug>=0.4.0
 tensorboard
 wandb>=0.15.0
 
-
-
+pydot
 
 # # Core ML Framework
 # tensorflow>=2.13.0
