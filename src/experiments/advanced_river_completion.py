@@ -651,8 +651,9 @@ if __name__ == "__main__":
     sys.path.append('src/data')
     sys.path.append('experiments')
     output_path = 'experiments\\results'
-    mask_path = 'data\processed\\train\masks\DJI_20250324092955_0011_V_March.png'
+    # mask_path = 'data\processed\\train\masks\DJI_20250324092955_0011_V_March.png'
+    mask_path = 'data\processed\\train\masks\DJI_20250324094552_0023_V_March.png'
     image_path = 'data\processed\\train\images\DJI_20250324092955_0011_V_March.png'
-    main(image_path, output_path)
+    main(mask_path, output_path)
 
 
