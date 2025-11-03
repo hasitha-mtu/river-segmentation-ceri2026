@@ -334,12 +334,12 @@ def create_tf_dataset(
     
     # Determine number of channels
     channel_map = {
-        "all": 13,
+        "all": 10,
         "luminance": 2,
-        "chrominance": 10,
+        "chrominance": 7,
         "rgb": 3
     }
-    n_channels = channel_map.get(feature_config, 13)
+    n_channels = channel_map.get(feature_config, 10)
     
     # Create dataset from file paths
     dataset = tf.data.Dataset.from_tensor_slices((image_paths, mask_paths))
@@ -427,7 +427,7 @@ if __name__ == "__main__":
     
     # Extract all features
     all_features = extractor.extract_all_features(sample_image)
-    print(f"All features shape: {all_features.shape}")  # (512, 512, 13)
+    print(f"All features shape: {all_features.shape}")  # (512, 512, 10)
 
     # Visualize features
     visualize_features(all_features, extractor.feature_names, 'results/feature_importance/extracted_features')
@@ -438,7 +438,7 @@ if __name__ == "__main__":
     
     # Extract chrominance only
     chrominance = extractor.extract_chrominance_only(sample_image)
-    print(f"Chrominance features shape: {chrominance.shape}")  # (512, 512, 10)
+    print(f"Chrominance features shape: {chrominance.shape}")  # (512, 512, 7)
     
     # Extract RGB baseline
     rgb = extractor.extract_rgb_only(sample_image)
@@ -446,7 +446,7 @@ if __name__ == "__main__":
     
     # Convert to TensorFlow tensor
     tensor = extractor.to_tensor(all_features)
-    print(f"TensorFlow tensor shape: {tensor.shape}")  # (512, 512, 13)
+    print(f"TensorFlow tensor shape: {tensor.shape}")  # (512, 512, 10)
     print(f"TensorFlow tensor dtype: {tensor.dtype}")
     
     # Normalize features
