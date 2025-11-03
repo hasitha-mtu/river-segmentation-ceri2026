@@ -26,7 +26,8 @@ from dataset import RiverSegmentationDataset, create_augmentation_pipeline
 
 sys.path.append('src/models')
 from unet import create_unet_model
-from deeplabv3plus import create_deeplabv3plus
+from unet_pretrained import create_unet_pretrained
+from deeplabv3plus_adapted import create_deeplabv3plus
 
 def load_config(config_path='config/config.yaml'):
     """Load configuration from YAML file"""
@@ -54,6 +55,10 @@ def create_model(
     if model_type == 'unet':
         print(f"Creating U-Net model with input shape {input_shape}")
         model = create_unet_model(input_shape=input_shape, num_classes=1)
+
+    if model_type == 'unet_pretrained':
+        print(f"Creating U-Net model with input shape {input_shape}")
+        model = create_unet_pretrained(input_shape=input_shape, num_classes=1)
         
     elif model_type == 'deeplabv3plus':
         print(f"Creating DeepLabv3+ model with input shape {input_shape}")
