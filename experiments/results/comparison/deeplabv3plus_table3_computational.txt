@@ -1,0 +1,10 @@
+
+Table 3: DEEPLABV3PLUS - Computational Cost Comparison
+================================================================================
+
+| Config       | Channels | Params  | Pretrain Time | Scratch Time | Time Ratio |
+|--------------|----------|---------|---------------|--------------|------------|
+| Rgb          |        3 |  17.83M |         0.67h |        0.57h |      0.85x |
+| Luminance    |        3 |  17.83M |         0.52h |        0.94h |      1.79x |
+| Chrominance  |        7 |  17.83M |         0.76h |         nanh |      0.00x |
+| All          |       10 |  17.83M |         0.84h |        1.60h |      1.90x |

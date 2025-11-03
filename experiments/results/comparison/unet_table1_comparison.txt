@@ -1,0 +1,13 @@
+
+Table 1: UNET - Pretrained vs From-Scratch Training
+================================================================================
+
+| Configuration | Pretrained | From Scratch | Δ Dice  | Benefit | IoU (P) | IoU (S) |
+|--------------|------------|--------------|---------|---------|---------|---------|
+| Rgb          | 0.8614     | 0.8458       | +0.0156 |  +1.84% | 0.7777  | 0.7610  |
+| Luminance    | 0.8133     | 0.7788       | +0.0345 |  +4.43% | 0.7158  | 0.6743  |
+| All          | 0.8100     | 0.8415       | -0.0315 |  -3.74% | 0.7138  | 0.7544  |
+| Chrominance  | 0.7846     | 0.8332       | -0.0486 |  -5.83% | 0.6839  | 0.7424  |
+
+P = Pretrained, S = From Scratch
+Δ Dice = Pretrained - Scratch (positive = pretrained better)

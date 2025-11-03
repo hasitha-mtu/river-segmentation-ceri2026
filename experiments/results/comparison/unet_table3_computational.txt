@@ -1,0 +1,10 @@
+
+Table 3: UNET - Computational Cost Comparison
+================================================================================
+
+| Config       | Channels | Params  | Pretrain Time | Scratch Time | Time Ratio |
+|--------------|----------|---------|---------------|--------------|------------|
+| Rgb          |        3 |  30.54M |         0.85h |        1.38h |      1.62x |
+| Luminance    |        3 |  30.54M |         0.84h |        1.48h |      1.77x |
+| Chrominance  |        7 |  30.55M |         0.63h |        1.46h |      2.31x |
+| All          |       10 |  30.56M |         0.88h |        1.41h |      1.59x |

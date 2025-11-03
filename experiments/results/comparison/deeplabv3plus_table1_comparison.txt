@@ -1,0 +1,13 @@
+
+Table 1: DEEPLABV3PLUS - Pretrained vs From-Scratch Training
+================================================================================
+
+| Configuration | Pretrained | From Scratch | Δ Dice  | Benefit | IoU (P) | IoU (S) |
+|--------------|------------|--------------|---------|---------|---------|---------|
+| Rgb          | 0.8415     | 0.6515       | +0.1900 | +29.15% | 0.7562  | 0.5504  |
+| All          | 0.7760     | 0.7114       | +0.0646 |  +9.08% | 0.6736  | 0.6077  |
+| Luminance    | 0.7412     | 0.5981       | +0.1430 | +23.92% | 0.6271  | 0.4822  |
+| Chrominance  | 0.6793     | 0.8242       | -0.1449 | -17.58% | 0.5660  | 0.7349  |
+
+P = Pretrained, S = From Scratch
+Δ Dice = Pretrained - Scratch (positive = pretrained better)

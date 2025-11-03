@@ -1,0 +1,62 @@
+============================================================
+SUGGESTED TRAIN/VAL/TEST SPLIT
+============================================================
+Train: 246 images (59.3%)
+Val:   80 images (19.3%)
+Test:  89 images (21.4%)
+
+Stratification Check:
+
+Train:
+  Canopy categories: {'Very Dense': 80, 'Sparse': 79, 'Moderate': 59, 'Dense': 28}
+  Months: {'July': 107, 'March': 99, 'June': 40}
+  Mean canopy: 52.1%
+
+Val:
+  Canopy categories: {'Sparse': 26, 'Very Dense': 26, 'Moderate': 19, 'Dense': 9}
+  Months: {'July': 35, 'March': 32, 'June': 13}
+  Mean canopy: 52.9%
+
+Test:
+  Canopy categories: {'Very Dense': 28, 'Sparse': 27, 'Moderate': 23, 'Dense': 11}
+  Months: {'July': 38, 'March': 35, 'June': 16}
+  Mean canopy: 52.9%
+
+✓ Saved split to analysis_results/train_val_test_split.json
+
+Step 5: Generating comprehensive report...
+
+✓ Saved report to analysis_results\dataset_analysis_report.txt
+
+================================================================================
+ANALYSIS COMPLETE!
+================================================================================
+
+Results saved to: analysis_results/
+
+Generated files:
+  1. dataset_analysis_full.csv - Detailed per-image metrics
+  2. summary_statistics.json - Overall dataset statistics
+  3. dataset_analysis_overview.png - Main visualizations
+  4. stratification_analysis.png - Distribution analysis
+  5. train_val_test_split.json - Suggested data split
+  6. dataset_analysis_report.txt - Comprehensive text report
+
+================================================================================
+KEY FINDINGS
+================================================================================
+Total Images: 415
+Canopy Range: 6.7% - 95.6%
+Mean Canopy: 52.4% (±29.4%)
+
+Canopy Categories:
+  Sparse:      132 images
+  Moderate:    101 images
+  Dense:       48 images
+  Very Dense:  134 images
+
+Temporal Split:
+  March: 166 images
+  June:  69 images
+  July:  180 images
+================================================================================

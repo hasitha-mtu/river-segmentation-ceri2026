@@ -1,0 +1,147 @@
+================================================================================
+GENERATING COMPARISON TABLES - UNET
+================================================================================
+
+Generating Table 1: Feature Configuration Comparison...
+
+Table 1: UNET - Pretrained vs From-Scratch Training
+================================================================================
+
+| Configuration | Pretrained | From Scratch | Δ Dice  | Benefit | IoU (P) | IoU (S) |
+|--------------|------------|--------------|---------|---------|---------|---------|
+| Rgb          | 0.8614     | 0.8458       | +0.0156 |  +1.84% | 0.7777  | 0.7610  |
+| Luminance    | 0.8133     | 0.7788       | +0.0345 |  +4.43% | 0.7158  | 0.6743  |
+| All          | 0.8100     | 0.8415       | -0.0315 |  -3.74% | 0.7138  | 0.7544  |
+| Chrominance  | 0.7846     | 0.8332       | -0.0486 |  -5.83% | 0.6839  | 0.7424  |
+
+P = Pretrained, S = From Scratch
+Δ Dice = Pretrained - Scratch (positive = pretrained better)
+
+✓ Saved to experiments\results\comparison\unet_table1_comparison.txt
+
+Generating Table 2: Critical Analysis...
+
+Table 2: Critical Analysis - Feature Adaptation Impact
+{'='*80}
+
+Question: Is the projection layer (10ch→3ch) hurting performance?
+Method: Compare ranking changes between pretrained and scratch training
+
+
+PRETRAINED RANKING:
+  1. RGB          - Dice: 0.8614
+  2. LUMINANCE    - Dice: 0.8133
+  3. ALL          - Dice: 0.8100
+  4. CHROMINANCE  - Dice: 0.7846
+
+FROM SCRATCH RANKING:
+  1. RGB          - Dice: 0.8458
+  2. ALL          - Dice: 0.8415
+  3. CHROMINANCE  - Dice: 0.8332
+  4. LUMINANCE    - Dice: 0.7788
+
+================================================================================
+KEY FINDINGS:
+
+1. Pretrained Winner: RGB
+2. Scratch Winner: RGB
+
+3. RGB vs ALL FEATURES:
+   Pretrained: RGB 0.8614 vs All 0.8100 (RGB wins by +6.34%)
+   Scratch:    RGB 0.8458 vs All 0.8415 (RGB wins by +0.50%)
+
+4. CONCLUSION:
+   → RGB dominates in BOTH training regimes
+   → Additional features don't help (inherent to task)
+   → Projection layer is NOT the main bottleneck
+
+✓ Saved to experiments\results\comparison\unet_table2_analysis.txt
+
+Generating Table 3: Computational Comparison...
+
+Table 3: UNET - Computational Cost Comparison
+================================================================================
+
+| Config       | Channels | Params  | Pretrain Time | Scratch Time | Time Ratio |
+|--------------|----------|---------|---------------|--------------|------------|
+| Rgb          |        3 |  30.54M |         0.85h |        1.38h |      1.62x |
+| Luminance    |        3 |  30.54M |         0.84h |        1.48h |      1.77x |
+| Chrominance  |        7 |  30.55M |         0.63h |        1.46h |      2.31x |
+| All          |       10 |  30.56M |         0.88h |        1.41h |      1.59x |
+
+✓ Saved to experiments\results\comparison\unet_table3_computational.txt
+
+Generating visualization...
+✓ Visualization saved to experiments\results\comparison\unet_comparison.png
+
+================================================================================
+GENERATING COMPARISON TABLES - DEEPLABV3PLUS
+================================================================================
+
+Generating Table 1: Feature Configuration Comparison...
+
+Table 1: DEEPLABV3PLUS - Pretrained vs From-Scratch Training
+================================================================================
+
+| Configuration | Pretrained | From Scratch | Δ Dice  | Benefit | IoU (P) | IoU (S) |
+|--------------|------------|--------------|---------|---------|---------|---------|
+| Rgb          | 0.8415     | 0.6515       | +0.1900 | +29.15% | 0.7562  | 0.5504  |
+| All          | 0.7760     | 0.7114       | +0.0646 |  +9.08% | 0.6736  | 0.6077  |
+| Luminance    | 0.7412     | 0.5981       | +0.1430 | +23.92% | 0.6271  | 0.4822  |
+| Chrominance  | 0.6793     | 0.8242       | -0.1449 | -17.58% | 0.5660  | 0.7349  |
+
+P = Pretrained, S = From Scratch
+Δ Dice = Pretrained - Scratch (positive = pretrained better)
+
+✓ Saved to experiments\results\comparison\deeplabv3plus_table1_comparison.txt
+
+Generating Table 2: Critical Analysis...
+
+Table 2: Critical Analysis - Feature Adaptation Impact
+{'='*80}
+
+Question: Is the projection layer (10ch→3ch) hurting performance?
+Method: Compare ranking changes between pretrained and scratch training
+
+
+PRETRAINED RANKING:
+  1. RGB          - Dice: 0.8415
+  2. ALL          - Dice: 0.7760
+  3. LUMINANCE    - Dice: 0.7412
+  4. CHROMINANCE  - Dice: 0.6793
+
+FROM SCRATCH RANKING:
+  1. CHROMINANCE  - Dice: 0.8242
+  2. ALL          - Dice: 0.7114
+  3. RGB          - Dice: 0.6515
+  4. LUMINANCE    - Dice: 0.5981
+
+================================================================================
+KEY FINDINGS:
+
+1. Pretrained Winner: RGB
+2. Scratch Winner: CHROMINANCE
+
+3. RGB vs ALL FEATURES:
+   Pretrained: RGB 0.8415 vs All 0.7760 (RGB wins by +8.43%)
+   Scratch:    RGB 0.6515 vs All 0.7114 (All wins by +9.19%)
+
+4. CONCLUSION:
+   ✓ CRITICAL FINDING: All features WIN when trained from scratch!
+   → Projection layer (10ch→3ch) IS the bottleneck
+   → Additional features ARE useful but adaptation loses information
+   → Recommendation: Develop better adaptation strategy
+
+✓ Saved to experiments\results\comparison\deeplabv3plus_table2_analysis.txt
+
+Generating Table 3: Computational Comparison...
+
+Table 3: DEEPLABV3PLUS - Computational Cost Comparison
+================================================================================
+
+| Config       | Channels | Params  | Pretrain Time | Scratch Time | Time Ratio |
+|--------------|----------|---------|---------------|--------------|------------|
+| Rgb          |        3 |  17.83M |         0.67h |        0.57h |      0.85x |
+| Luminance    |        3 |  17.83M |         0.52h |        0.94h |      1.79x |
+| Chrominance  |        7 |  17.83M |         0.76h |         nanh |      0.00x |
+| All          |       10 |  17.83M |         0.84h |        1.60h |      1.90x |

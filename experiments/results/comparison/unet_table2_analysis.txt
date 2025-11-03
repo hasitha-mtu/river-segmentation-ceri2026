@@ -1,0 +1,34 @@
+
+Table 2: Critical Analysis - Feature Adaptation Impact
+{'='*80}
+
+Question: Is the projection layer (10ch→3ch) hurting performance?
+Method: Compare ranking changes between pretrained and scratch training
+
+
+PRETRAINED RANKING:
+  1. RGB          - Dice: 0.8614
+  2. LUMINANCE    - Dice: 0.8133
+  3. ALL          - Dice: 0.8100
+  4. CHROMINANCE  - Dice: 0.7846
+
+FROM SCRATCH RANKING:
+  1. RGB          - Dice: 0.8458
+  2. ALL          - Dice: 0.8415
+  3. CHROMINANCE  - Dice: 0.8332
+  4. LUMINANCE    - Dice: 0.7788
+
+================================================================================
+KEY FINDINGS:
+
+1. Pretrained Winner: RGB
+2. Scratch Winner: RGB
+
+3. RGB vs ALL FEATURES:
+   Pretrained: RGB 0.8614 vs All 0.8100 (RGB wins by +6.34%)
+   Scratch:    RGB 0.8458 vs All 0.8415 (RGB wins by +0.50%)
+
+4. CONCLUSION:
+   → RGB dominates in BOTH training regimes
+   → Additional features don't help (inherent to task)
+   → Projection layer is NOT the main bottleneck
