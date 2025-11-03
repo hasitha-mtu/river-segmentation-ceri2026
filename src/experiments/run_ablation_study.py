@@ -377,7 +377,7 @@ def main():
         '--model',
         type=str,
         default='both',
-        choices=['unet', 'deeplabv3plus', 'both'],
+        choices=['unet', 'unet_pretrained', 'deeplabv3plus', 'both'],
         help='Model architecture to use'
     )
     
